@@ -409,42 +409,7 @@ print(f"- Model exported to: {export_path}")
 print(f"- Evaluation report: {os.path.join(DATA_DIR, 'evaluation_report.json')}")
 print(f"- Metadata DB: {METADATA_DB}")
 
-import tensorflow as tf
 
-# Path to the exported model (latest run)
-export_dir = "serving_model/penguin_model_20251004_131928"
-
-# Load the SavedModel
-loaded_model = tf.saved_model.load(export_dir)
-
-# Get the serving function (endpoint 'serve')
-serve_fn = loaded_model.signatures["serving_default"]
-
-import numpy as np
-import tensorflow as tf
-
-sample = {
-    "bill_length_mm": tf.constant([[39.1]], dtype=tf.float32),
-    "bill_depth_mm": tf.constant([[18.7]], dtype=tf.float32),
-    "flipper_length_mm": tf.constant([[181.0]], dtype=tf.float32),
-    "body_mass_g": tf.constant([[3750.0]], dtype=tf.float32),
-    "island": tf.constant([["Torgersen"]], dtype=tf.string),
-    "sex": tf.constant([["Male"]], dtype=tf.string)
-}
-
-# Run prediction
-pred = serve_fn(**sample)
-
-# Extract probabilities
-probs = pred["output_0"].numpy()
-
-print("Raw model output (probabilities):", probs)
-print("Predicted species index:", np.argmax(probs, axis=1))
-
-# If you want to map back to species names
-label_vocab = ["Adelie", "Chinstrap", "Gentoo"]  # order must match training
-predicted_species = [label_vocab[i] for i in np.argmax(probs, axis=1)]
-print("Predicted species:", predicted_species)
 
 """# **Part B – (25 marks)**
 
