@@ -1,4 +1,3 @@
-
 name: MLOps Assignment 2 Part D Pipeline
 
 on:
@@ -11,21 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0   # ensures full git history if needed
 
+      # 2️⃣ Setup Python environment
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.10'  # stable for TensorFlow
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install tensorflow==2.14.0 pandas scikit-learn seaborn
+          python -m pip install --upgrade pip
+          pip install tensorflow==2.14.0 pandas==2.1.0 scikit-learn==1.3.0 seaborn==0.12.2
 
-      - name: List repo files
+      # 4️⃣ Debug: list all files
+      - name: List repository files
         run: ls -R
 
+      # 5️⃣ Run your ML pipeline
       - name: Run ML Pipeline
-        run: python run_pipeline_main.py
+        run: |
+          # Create output directories to avoid FileNotFoundError
+          mkdir -p tfx_pipeline_output
+          mkdir -p serving_model
+          python run_pipeline_main.py
+
+      # 6️⃣ Optional: check git status (debug only)
+      - name: Git status
+        run: git status
