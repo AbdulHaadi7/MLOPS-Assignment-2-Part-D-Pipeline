@@ -1,1 +1,31 @@
 
+name: MLOps Assignment 2 Part D Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  train_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install tensorflow==2.14.0 pandas scikit-learn seaborn
+
+      - name: List repo files
+        run: ls -R
+
+      - name: Run ML Pipeline
+        run: python run_pipeline_main.py
